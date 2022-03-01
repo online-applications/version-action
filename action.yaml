@@ -1,0 +1,8 @@
+name: 'Rise Version Action'
+description: 'Calculates the next semVer version and outputs it.'
+branding:
+  icon: arrow-up
+  color: green
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
