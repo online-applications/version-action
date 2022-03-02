@@ -20,8 +20,7 @@ func CheckRc(s string) bool {
 
 func GetLatestTag(environment string) (string, error){
 	log.Println("Fetching latest tag version...")
-	arg1 := "--sort='-*authordate' | head -n1"
-	out, err := exec.Command("sh", "-c", "git tag -l --merged", environment, arg1).Output()
+	out, err := exec.Command("sh", "-c", "git describe --tags $(git rev-list --tags --max-count=1)").Output()
 	if err != nil {
 		log.Println("Error was found while getting the latest commit message", err)
 	}
@@ -30,14 +29,18 @@ func GetLatestTag(environment string) (string, error){
 }
 
 func TrimTag(latestTagRaw string) string {
-	log.Println("Trimming tag")
+	log.Println("Trimming tag:", latestTagRaw)
 	latest_tag := strings.Trim(latestTagRaw, "\n")
 	latest := strings.Trim(latest_tag, " ")
+	// After trimming - check if no previous tag exists, and return fallout tag
+	if latest == "" {
+		return "0.0.1"
+	}
 	latest_tag_no_v :=  RemovePrefix(latest, "v")
 	return latest_tag_no_v
 }
 
-func GetVersionType(input string, words [3]string) string {	
+func GetVersionType(input string, words [3]string) string {
 	v1 := strings.Contains(input, words[0])
 	v2 := strings.Contains(input, words[1])
 	v3 := strings.Contains(input, words[2])
@@ -77,6 +80,7 @@ func RemoveSuffix(tag, suffix string) string {
 }
 
 func IncreaseRc(tag string) (string, error) {
+	log.Println("Increasing rc version")
 	// Extract rc
 	splitted := strings.Split(tag, ".rc-")
 	// Convert to int
