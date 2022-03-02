@@ -2,6 +2,8 @@ package utils
 
 import (
 	"os"
+	"log"
+	"fmt"
 )
 
 func GetEnv(key string) string {
@@ -9,4 +11,9 @@ func GetEnv(key string) string {
 		return value
 	}
 	return ""
+}
+
+func SetTagOutputName(value string){
+	log.Println("Setting tag as:", value)
+	fmt.Printf(`::set-output name=tag::%s`, value)
 }
