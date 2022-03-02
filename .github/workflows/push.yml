@@ -31,16 +31,13 @@ env:
 
 jobs:
   build:
-    name: Build Image
+    name: Calculate version
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
       uses: actions/checkout@v2
       with:
           fetch-depth: 0
-    - name: Setup Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: '1.17'
     - name: calculate version
+      id: version
       uses: ./

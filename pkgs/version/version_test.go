@@ -25,15 +25,10 @@ func TestCheckRc(t *testing.T) {
 }
 
 func TestGetLatestTag(t *testing.T) {
-	branch_bytes, err_branch := exec.Command("sh", "-c", "git rev-parse --abbrev-ref HEAD").Output()
-	branch := string(branch_bytes)
-	if err_branch != nil {
-		t.Error("Error was found while getting the current branch!!", err_branch)
-	}
-	got, err := GetLatestTag(branch)
+	got, err := GetLatestTag()
 	
 	
-	want_byte, err_two := exec.Command("sh", "-c", "git tag  -l --merged", branch, "--sort='-*authordate' | head -n1").Output()
+	want_byte, err_two := exec.Command("sh", "-c", "git describe --tags $(git rev-list --tags --max-count=1)").Output()
 	want := string(want_byte)
 	if err != nil || err_two != nil {
 		t.Error("Error was found while getting the latest commit message", err)
@@ -43,8 +38,8 @@ func TestGetLatestTag(t *testing.T) {
 		t.Errorf("got %s, wanted %s", got, want)
 	}
 
-	got_three, err_three := GetLatestTag("staging")
-	want_byte_two, err_four := exec.Command("sh", "-c", "git tag  -l --merged", branch, "--sort='-*authordate' | head -n1").Output()
+	got_three, err_three := GetLatestTag()
+	want_byte_two, err_four := exec.Command("sh", "-c", "git describe --tags $(git rev-list --tags --max-count=1)").Output()
 	want_two := string(want_byte_two)
 	if err_three != nil || err_four != nil {
 		t.Error("Error was found while getting the latest commit message", err)
