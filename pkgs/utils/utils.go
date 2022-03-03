@@ -18,9 +18,12 @@ func SetTagOutputName(value string){
 	// Set ecr tag
 	ecr_tag := version.RemovePrefix(value, "v")
 	log.Println("Setting ecr tag as:", ecr_tag)
+	log.Printf("Running: ::set-output name=ecr_tag::%s`", ecr_tag)
 	fmt.Printf(`::set-output name=ecr_tag::%s`, ecr_tag)
 
 	// Set repo tag
-	log.Println("Setting repo tag as:", value)
-	fmt.Printf(`::set-output name=tag::%s`, value)
+	repo_tag := value
+	log.Println("Setting repo tag as:", repo_tag)
+	log.Printf("Running: ::set-output name=ecr_tag::%s`", repo_tag)
+	fmt.Printf(`::set-output name=repo_tag::%s`, repo_tag)
 }
