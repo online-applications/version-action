@@ -24,6 +24,6 @@ func SetTagOutputName(value string){
 	// Set repo tag
 	repo_tag := value
 	log.Println("Setting repo tag as:", repo_tag)
-	log.Printf("Running: ::set-output name=ecr_tag::%s`", repo_tag)
+	log.Printf("Running: ::set-output name=repo_tag::%s`", repo_tag)
 	fmt.Printf(`::set-output name=repo_tag::%s`, repo_tag)
 }
