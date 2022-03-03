@@ -14,12 +14,12 @@ type Commit struct {
 	Type string
 }
 
-func prepareTagCommit(commitMessage, environment string) Commit {
+func prepareTagCommit(commitMessage string) Commit {
 	commit := Commit{}
 	// Get latest tag
-	latestTagRaw, err := version.GetLatestTag(environment)
+	latestTagRaw, err := version.GetLatestTag()
 	if err != nil {
-		log.Fatalln("Error was found while getting the latest commit message", err)
+		log.Fatalln("Error was found while getting the latest tag", err)
 	}
 	// Trim tag & Remove 'v'
 	commit.Tag = version.TrimTag(latestTagRaw)
@@ -33,11 +33,11 @@ func prepareTagCommit(commitMessage, environment string) Commit {
 	return commit
 }
 
-func stagingVersion(tag, verionType string, rc bool) string {
+func stagingVersion(commit Commit, rc bool) string {
 	log.Println("Building staging version...")
 	// increase rc version by 1
 	if rc {
-		rcTag, err := version.IncreaseRc(tag)
+		rcTag, err := version.IncreaseRc(commit.Tag)
 		if err != nil {
 			log.Fatalln("Error converting rc version to int:", err)
 		}
@@ -45,9 +45,9 @@ func stagingVersion(tag, verionType string, rc bool) string {
 		return finalTag
 	}
 	// Bump version and add rc
-	semVer := version.MakeSemVer(tag)
+	semVer := version.MakeSemVer(commit.Tag)
 	log.Println("succesfully made semver")
-	bumped := version.Bump(bumps, verionType, semVer)
+	bumped := version.Bump(bumps, commit.Type, semVer)
 	// Add rc
 	strSemver := version.SemVerToString(bumped)
 	rcTag := version.AddRc(strSemver)
@@ -57,11 +57,20 @@ func stagingVersion(tag, verionType string, rc bool) string {
 
 }
 
-func productionVersion(tag string, rc bool) string{
-	log.Println("Building production version for tag:", tag)
-	tagNoRc := version.RemoveSuffix(tag, ".rc-")
-	return version.AddV(tagNoRc)
-
+func productionVersion(commit Commit, rc bool) string{
+	log.Println("Building production version for tag:", commit.Tag)
+	if rc {
+		tagNoRc := version.RemoveSuffix(commit.Tag, ".rc-")
+		return version.AddV(tagNoRc)
+	}
+	// Bump version
+	semVer := version.MakeSemVer(commit.Tag)
+	log.Println("succesfully made semver")
+	bumped := version.Bump(bumps, "patch", semVer)
+	strSemver := version.SemVerToString(bumped)
+	// Restore v
+	finalTag := version.AddV(strSemver)
+	return finalTag
 }
 
 func main() {
@@ -72,7 +81,7 @@ func main() {
 	log.Println("Commit message:", commitMessage)
 	
 	// Preparing tag & commit
-	commit := prepareTagCommit(commitMessage, environment)
+	commit := prepareTagCommit(commitMessage)
 	
 	log.Println("Trimmed tag:", commit.Tag)
 	log.Println("versionType:", commit.Type)
@@ -83,10 +92,14 @@ func main() {
 	// Calculate staging or production version
 	switch environment {
 	case "staging":
-		finalTag := stagingVersion(commit.Tag, commit.Type, rc)
-		log.Println(finalTag)
-	case "main", "master":
-		finalTag := productionVersion(commit.Tag, rc)
-		log.Println(finalTag)
+		log.Println("Environment is staging")
+		finalTag := stagingVersion(commit, rc)
+		// Set repo & ecr tag
+		utils.SetTagOutputName(finalTag)
+	case "main", "master", "production":
+		log.Println("Environment is production")
+		finalTag := productionVersion(commit, rc)
+		// Set repo & ecr tag
+		utils.SetTagOutputName(finalTag)
 	}
 }
