@@ -66,7 +66,7 @@ func productionVersion(commit Commit, rc bool) string{
 	// Bump version
 	semVer := version.MakeSemVer(commit.Tag)
 	log.Println("succesfully made semver")
-	bumped := version.Bump(bumps, "patch", semVer)
+	bumped := version.Bump(bumps, "bugfix", semVer)
 	strSemver := version.SemVerToString(bumped)
 	// Restore v
 	finalTag := version.AddV(strSemver)

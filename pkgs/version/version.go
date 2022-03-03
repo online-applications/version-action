@@ -98,12 +98,6 @@ func IncreaseRc(tag string) (string, error) {
 }
 
 func Bump(bumps map[string]string, versionType string, semVer *semver.Version ) *semver.Version {
-	log.Println("Bumping...")
-	log.Println("Version type is:", versionType)
-	log.Println("Bumps are", bumps)
-	log.Println("Bumping to:", bumps[versionType])
-	bump_test, found_test := bumps[versionType]
-	log.Println(bump_test, found_test)
 	bump, found := bumps[versionType]
 	log.Println("Bumping", bump)
 	switch found {
