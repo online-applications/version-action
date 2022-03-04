@@ -95,13 +95,11 @@ func main() {
 		log.Println("Environment is staging")
 		finalTag := stagingVersion(commit, rc)
 		// Set repo & ecr tag
-		utils.SetRepoTagOutputName(finalTag)
-		utils.SetEcrTagOutputName(finalTag)
+		utils.SetTagOutputName(finalTag)
 	case "main", "master", "production":
 		log.Println("Environment is production")
 		finalTag := productionVersion(commit, rc)
 		// Set repo & ecr tag
-		utils.SetRepoTagOutputName(finalTag)
-		utils.SetEcrTagOutputName(finalTag)
+		utils.SetTagOutputName(finalTag)
 	}
 }

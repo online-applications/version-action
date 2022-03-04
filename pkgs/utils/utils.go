@@ -14,18 +14,16 @@ func GetEnv(key string) string {
 	return ""
 }
 
-func SetRepoTagOutputName(value string){
-	// Set repo tag
-	repo_tag := value
-	log.Println("Setting repo tag as:", repo_tag)
-	log.Printf("Running: ::set-output name=repo_tag::%s`", repo_tag)
-	fmt.Printf(`::set-output name=repo_tag::%s`, repo_tag)
-}
-
-func SetEcrTagOutputName(value string){
+func SetTagOutputName(value string){
 	// Set ecr tag
 	ecr_tag := version.RemovePrefix(value, "v")
 	log.Println("Setting ecr tag as:", ecr_tag)
 	log.Printf("Running: ::set-output name=ecr_tag::%s`", ecr_tag)
 	fmt.Printf(`::set-output name=ecr_tag::%s`, ecr_tag)
+
+	// Set repo tag
+	repo_tag := value
+	log.Println("Setting repo tag as:", repo_tag)
+	log.Printf("Running: ::set-output name=repo_tag::%s`", repo_tag)
+	fmt.Printf(`::set-output name=repo_tag::%s`, repo_tag)
 }
