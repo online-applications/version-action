@@ -27,7 +27,7 @@ func prepareTagCommit(commitMessage string) Commit {
 	// Get commit message version level (breaking, feature, bugfix)
 	versionType := version.GetVersionType(commitMessage, commitTypes)
 	if versionType == "" {
-		log.Fatalln("Version tag is not valid. Commit message must contain one of the following: [breaking, feature, bugfix]")
+		log.Fatalln("Commit message must contain one of the following: [breaking, feature, bugfix]")
 	}
 	commit.Type = versionType
 	return commit

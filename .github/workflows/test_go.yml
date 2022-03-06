@@ -7,6 +7,10 @@ on:
     - staging
     - main
 
+env:
+  COMMIT_MESSAGE:         ${{ github.event.head_commit.message }}
+  ENVIRONMENT:            ${{ github.ref_name }}
+
 jobs:
   Test:
     name: Test code
