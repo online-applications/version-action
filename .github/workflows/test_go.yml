@@ -1,0 +1,47 @@
+name: test_go
+
+on:
+  push:
+    branches:
+    - master
+    - staging
+    - main
+env:
+  # Statics:
+  PROJECT_NAME:           ${{ github.event.repository.name }}
+  PROJECT_URL:            ${{ github.event.repository.url }}
+  COMMITER:               ${{ github.event.sender.login }}
+  SLACK_URL:              https://slack.search-dev-ops.com
+  CHANNEL_ID:             C033DQJKFQU
+  USERS_FILE:             users.json
+  USERS_S3_FILE_PATH:     github-actions-rise
+  COMMIT_MESSAGE:         ${{ github.event.head_commit.message }}
+  COMMIT_SHA:             ${{ github.event.pull_request.base.sha }}
+  PR_BUILD_URL:           ${{ github.event.pull_request.diff_url }}
+  PUSH_BUILD_URL:         ${{ github.event.repository.html_url }}
+  AWS_ACCESS_KEY_ID:      ${{ secrets.aws_access_key }}
+  AWS_SECRET_ACCESS_KEY:  ${{ secrets.aws_secret_key }}
+  AWS_REGION:             us-east-1
+  # Dynamics:
+  RUN_ID:                 ${{ github.run_id }}
+  ENVIRONMENT:            ${{ github.ref_name }}
+  VERSION:                ${{ github.event.push.base.ref }}
+  TEAM:                   Core
+  # Optional:
+  CUSTOM_PAYLOAD_PATH:    ./examples/custom_payload.json
+
+jobs:
+  Test:
+    name: Test code
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Test code
+      uses: addnab/docker-run-action@v3
+      with:
+        image: golang:1.17
+        options: -v ${{ github.workspace }}:/work
+        run: |
+          cd /work/
+          go test ./...
