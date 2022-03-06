@@ -10,7 +10,6 @@ on:
 jobs:
   Test:
     name: Test code
-    needs: [Slack_Start]
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
