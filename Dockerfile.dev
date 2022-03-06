@@ -1,0 +1,9 @@
+FROM golang:1.17
+RUN apk add --no-cache git
+WORKDIR /opt/src
+COPY . .
+RUN groupadd -g 1000 appuser &&\
+    useradd -m -u 1000 -g appuser appuser
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo /opt/src
+
+ENTRYPOINT [ "/app" ]
