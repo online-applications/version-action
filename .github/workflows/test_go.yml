@@ -31,17 +31,57 @@ env:
   CUSTOM_PAYLOAD_PATH:    ./examples/custom_payload.json
 
 jobs:
-  Test:
-    name: Test code
+  Slack_Start:
+    name: Send Slack Message
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+    - name: Send Slack Started Message
+      uses: online-applications/slack-action@v1.5.0
+      with:
+        status: started
+  Test:
+    name: Test code
+    needs: [Slack_Start]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - uses: docker/build-push-action@v2
+      with:
+        tags: test-image:latest
+        push: false
     - name: Test code
       uses: addnab/docker-run-action@v3
       with:
-        image: golang:1.17
-        options: -v ${{ github.workspace }}:/work
+        image: test-image:latest
         run: |
-          cd /work/
           go test ./...
+  Slack_Fail:
+    name: Send Fail Slack Message
+    runs-on: ubuntu-latest
+    if: ${{ always() && !cancelled() && contains(join(needs.Slack_Start.result, ''), 'failure') || contains(join(needs.Test.result, ''), 'failure')}}
+    needs: [Slack_Start, Test]
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+      with:
+          fetch-depth: 0
+    - name: Send Slack Failed Message
+      uses: online-applications/slack-action@v1.5.0
+      with:
+        status: failed
+  Slack_Success:
+    name: Send Success Slack Message
+    needs: [Slack_Start, Test]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+      with:
+          fetch-depth: 0
+    - name: Send Slack Success Message
+      uses: online-applications/slack-action@v1.5.0
+      with:
+        status: success
