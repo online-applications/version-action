@@ -12,7 +12,7 @@ env:
   PROJECT_URL:            ${{ github.event.repository.url }}
   COMMITER:               ${{ github.event.sender.login }}
   SLACK_URL:              https://slack.search-dev-ops.com
-  CHANNEL_ID:             C033DQJKFQU
+  CHANNEL_ID:             C033DQJKFQU # rise-rnd-devops-dev
   USERS_FILE:             users.json
   USERS_S3_FILE_PATH:     github-actions-rise
   COMMIT_MESSAGE:         ${{ github.event.head_commit.message }}
