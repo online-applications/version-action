@@ -2,7 +2,6 @@ package version
 
 import (
 	"fmt"
-	"os/exec"
 	"testing"
 	"github.com/coreos/go-semver/semver"
 )
