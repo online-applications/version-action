@@ -9,7 +9,7 @@ import (
 )
 
 func CheckRc(s string) bool {
-	isContains := strings.Contains(s, ".rc-")
+	isContains := strings.Contains(s, "-rc.")
 	if !isContains {
 		log.Println("Version doesnt contain rc")
 		return false
