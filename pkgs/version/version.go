@@ -83,7 +83,7 @@ func RemoveSuffix(tag, suffix string) string {
 func IncreaseRc(tag string) (string, error) {
 	log.Println("Increasing rc version")
 	// Extract rc
-	splitted := strings.Split(tag, ".rc-")
+	splitted := strings.Split(tag, "-rc.")
 	// Convert to int
 	intV, err := strconv.Atoi(splitted[1])
 	if err != nil {
@@ -94,7 +94,7 @@ func IncreaseRc(tag string) (string, error) {
 	// Convert to string
 	strVIncreased := strconv.Itoa(intVIncreased)
 	// return
-	return splitted[0] + ".rc-" + strVIncreased, err
+	return splitted[0] + "-rc." + strVIncreased, err
 }
 
 func Bump(bumps map[string]string, versionType string, semVer *semver.Version ) *semver.Version {
@@ -115,6 +115,6 @@ func Bump(bumps map[string]string, versionType string, semVer *semver.Version ) 
 }
 
 func AddRc(tag string) string {
-	log.Println("Adding .rc-1 to version")
-	return tag + ".rc-1"
+	log.Println("Adding -rc.1 to version")
+	return tag + "-rc.1"
 }
