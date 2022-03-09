@@ -60,7 +60,7 @@ func stagingVersion(commit Commit, rc bool) string {
 func productionVersion(commit Commit, rc bool) string{
 	log.Println("Building production version for tag:", commit.Tag)
 	if rc {
-		tagNoRc := version.RemoveSuffix(commit.Tag, ".rc-")
+		tagNoRc := version.RemoveSuffix(commit.Tag, "-rc.")
 		return version.AddV(tagNoRc)
 	}
 	// Bump version
