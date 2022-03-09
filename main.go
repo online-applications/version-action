@@ -92,14 +92,14 @@ func main() {
 	
 	// Calculate staging or production version
 	switch environment {
-	case "staging":
-		log.Println("Environment is staging")
-		finalTag := stagingVersion(commit, rc)
-		// Set repo & ecr tag
-		utils.SetTagOutputName(finalTag)
 	case "main", "master", "production":
 		log.Println("Environment is production")
 		finalTag := productionVersion(commit, rc)
+		// Set repo & ecr tag
+		utils.SetTagOutputName(finalTag)
+	default:
+		log.Printf("Branch is %s", environment)
+		finalTag := stagingVersion(commit, rc)
 		// Set repo & ecr tag
 		utils.SetTagOutputName(finalTag)
 	}
