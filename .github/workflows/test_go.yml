@@ -3,9 +3,7 @@ name: test_go
 on:
   push:
     branches:
-    - master
-    - staging
-    - main
+    - '*'
 
 env:
   COMMIT_MESSAGE:         ${{ github.event.head_commit.message }}
