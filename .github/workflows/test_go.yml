@@ -3,9 +3,7 @@ name: test_go
 on:
   push:
     branches:
-    - master
-    - staging
-    - main
+    - '*'
 
 env:
   COMMIT_MESSAGE:         ${{ github.event.head_commit.message }}
@@ -18,6 +16,11 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: |
+        echo "$GITHUB_CONTEXT"
     - uses: docker/build-push-action@v2
       with:
         file: Dockerfile.dev
