@@ -81,7 +81,6 @@ func main() {
 	log.Println("Commit message:", commitMessage)
 	
 	// Preparing tag & commit
-	// test
 	commit := prepareTagCommit(commitMessage)
 	
 	log.Println("Trimmed tag:", commit.Tag)
