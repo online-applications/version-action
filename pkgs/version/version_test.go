@@ -7,7 +7,7 @@ import (
 )
 
 func TestCheckRc(t *testing.T) {
-	got := CheckRc("v1.0.0.rc-2")
+	got := CheckRc("v1.0.0-rc.2")
 	want := true
 
 	if got != want {
@@ -29,8 +29,8 @@ func TestGetLatestTag(t *testing.T) {
 }
 
 func TestTrimTag(t *testing.T) {
-	got := TrimTag("v1.0.0.rc-2")
-	want := "1.0.0.rc-2"
+	got := TrimTag("v1.0.0-rc.2")
+	want := "1.0.0-rc.2"
 
 	if got != want {
 		t.Errorf("got %s, wanted %s", got, want)
@@ -118,13 +118,13 @@ func TestMakeSemVer(t *testing.T) {
 	}
 }
 func TestRemoveSuffix(t *testing.T) {
-	got := RemoveSuffix("v5.2.1.rc-3", ".rc-")
+	got := RemoveSuffix("v5.2.1-rc.3", "-rc.")
 	want := "v5.2.1"
 
 	if got != want {
 		t.Errorf("got %s, wanted %s", got, want)
 	}
-	got_two := RemoveSuffix("5.2.1.rc-3", ".rc-")
+	got_two := RemoveSuffix("5.2.1-rc.3", "-rc.")
 	want_two := "5.2.1"
 
 	if got_two != want_two {
@@ -133,11 +133,11 @@ func TestRemoveSuffix(t *testing.T) {
 }
 
 func TestIncreaseRc(t *testing.T) {
-	got, err := IncreaseRc("v5.2.1.rc-3")
+	got, err := IncreaseRc("v5.2.1-rc.3")
 	if err != nil {
 		t.Fatal("Error converting rc version to int:", err)
 	}
-	want := "v5.2.1.rc-4"
+	want := "v5.2.1-rc.4"
 
 	if got != want {
 		t.Errorf("got %s, wanted %s", got, want)
@@ -181,7 +181,7 @@ func TestBump(t *testing.T) {
 
 func TestAddRc(t *testing.T) {
 	got := AddRc("v5.2.1")
-	want := "v5.2.1.rc-1"
+	want := "v5.2.1-rc.1"
 
 	if got != want {
 		t.Errorf("got %s, wanted %s", got, want)
