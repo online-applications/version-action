@@ -19,7 +19,7 @@ func prepareTagCommit(commitMessage string) Commit {
 	// Get latest tag
 	latestTagRaw, err := version.GetLatestTag()
 	if err != nil {
-		log.Fatalln("Error was found while getting the latest tag", err)
+		log.Println("Error was found while getting the latest tag", err)
 	}
 	// Trim tag & Remove 'v'
 	commit.Tag = version.TrimTag(latestTagRaw)
