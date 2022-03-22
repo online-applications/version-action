@@ -35,7 +35,7 @@ func TrimTag(latestTagRaw string) string {
 	// After trimming - check if no previous tag exists, and return fallout tag
 	if latest == "" {
 		log.Println("Lastest tag was not found, using default tag: 0.0.1")
-		return "0.0.1"
+		return "0.0.0"
 	}
 	latest_tag_no_v :=  RemovePrefix(latest, "v")
 	return latest_tag_no_v
