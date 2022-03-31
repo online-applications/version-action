@@ -3,6 +3,12 @@ description: 'Calculates the next semVer version and outputs it.'
 branding:
   icon: arrow-up
   color: green
+inputs:
+  suffix:
+    description: 'Default - rc, options: none'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  suffix:
+    - ${{ inputs.suffix }}

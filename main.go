@@ -79,7 +79,12 @@ func main() {
 	commitMessage 		:= utils.GetEnv("COMMIT_MESSAGE")
 	
 	log.Println("Commit message:", commitMessage)
-	
+
+	// Get CLI arguments
+    suffix 				:= utils.GetCliArg(1)
+
+	log.Println("suffix is:", suffix)
+
 	// Preparing tag & commit
 	commit := prepareTagCommit(commitMessage)
 	
@@ -98,6 +103,11 @@ func main() {
 		utils.SetTagOutputName(finalTag)
 	default:
 		log.Printf("Branch is %s", environment)
+		if suffix == "none" {
+			finalTag := productionVersion(commit, false)
+			// Set repo & ecr tag
+			utils.SetTagOutputName(finalTag)
+		}
 		finalTag := stagingVersion(commit, rc)
 		// Set repo & ecr tag
 		utils.SetTagOutputName(finalTag)
