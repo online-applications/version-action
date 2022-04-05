@@ -14,7 +14,7 @@ type Commit struct {
 	Type string
 }
 
-func prepareTagCommit(commitMessage string) Commit {
+func prepareTagCommit(commitMessage, environment string) Commit {
 	commit := Commit{}
 	// Get latest tag
 	latestTagRaw, err := version.GetLatestTag()
@@ -26,7 +26,7 @@ func prepareTagCommit(commitMessage string) Commit {
 
 	// Get commit message version level (breaking, feature, bugfix)
 	versionType := version.GetVersionType(commitMessage, commitTypes)
-	if versionType == "" {
+	if versionType == "" && environment == "staging" {
 		log.Fatalln("Commit message must contain one of the following: [breaking, feature, bugfix]")
 	}
 	commit.Type = versionType
@@ -86,7 +86,7 @@ func main() {
 	log.Println("suffix is:", suffix)
 
 	// Preparing tag & commit
-	commit := prepareTagCommit(commitMessage)
+	commit := prepareTagCommit(commitMessage, environment)
 	
 	log.Println("Trimmed tag:", commit.Tag)
 	log.Println("versionType:", commit.Type)
