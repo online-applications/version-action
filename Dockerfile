@@ -5,8 +5,8 @@ RUN groupadd -g 1000 appuser &&\
     useradd -m -u 1000 -g appuser appuser
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo /opt/src
 
-FROM alpine:3.15
-RUN apk add --no-cache git
+FROM ubuntu:latest
+RUN apt-get install git
 LABEL "repository"="https://github.com/online-applications/version-action"
 LABEL "version"="1.0.0"
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
