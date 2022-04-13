@@ -39,7 +39,7 @@ func GetLatestTag() (string, error){
 func ExportGitCeiling() (string, error){
 	log.Println("Exporting git ceiling...")
 
-	cmd := exec.Command("sh", "-c", "export GIT_CEILING_DIRECTORIES=/__w")
+	cmd := exec.Command("sh", "-c", "git config --global --add safe.directory /github/workspace")
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmd.Stdout = &out
