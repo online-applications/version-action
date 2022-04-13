@@ -16,11 +16,11 @@ type Commit struct {
 
 func prepareTagCommit(commitMessage, environment string) Commit {
 	// PATCH - Untill version 2.35.2 is supported on alpine
-	export_out, err := version.ExportGitCeiling()
+	export_out, err := version.AddSafeDirectory()
 	if err != nil {
-		log.Println("exportGitCeiling - Error was found while getting the latest tag")
+		log.Println("AddSafeDirectory - Error was found while getting the latest tag")
 	}
-	log.Println("exportGitCeiling - export_out:", export_out)
+	log.Println("AddSafeDirectory - export_out:", export_out)
 	
 	
 	commit := Commit{}

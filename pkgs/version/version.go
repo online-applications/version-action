@@ -36,7 +36,7 @@ func GetLatestTag() (string, error){
 	return out.String(), err
 }
 
-func ExportGitCeiling() (string, error){
+func AddSafeDirectory() (string, error){
 	log.Println("Exporting git ceiling...")
 
 	cmd := exec.Command("sh", "-c", "git config --global --add safe.directory /github/workspace")
@@ -46,9 +46,9 @@ func ExportGitCeiling() (string, error){
 	cmd.Stderr = &stderr
 	err := cmd.Run()
 	if err != nil {
-		fmt.Println(fmt.Sprint(err) + ": " + stderr.String() + "In exportGitCeiling")
+		fmt.Println(fmt.Sprint(err) + ": " + stderr.String() + "In AddSafeDirectory")
 	}
-	log.Println("exportGitCeiling:", string(out.String()))
+	log.Println("AddSafeDirectory:", string(out.String()))
 	return out.String(), err
 }
 
