@@ -6,6 +6,8 @@ import (
 	"strings"
 	"github.com/coreos/go-semver/semver"
 	"strconv"
+	"bytes"
+	"fmt"
 )
 
 func CheckRc(s string) bool {
@@ -20,12 +22,18 @@ func CheckRc(s string) bool {
 
 func GetLatestTag() (string, error){
 	log.Println("Fetching latest tag version...")
-	out, err := exec.Command("sh", "-c", "git describe --tags $(git rev-list --tags --max-count=1)").Output()
+
+	cmd := exec.Command("sh", "-c", "git describe --tags $(git rev-list --tags --max-count=1)")
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+	err := cmd.Run()
 	if err != nil {
-		log.Println("GetLatestTag - Error was found while getting the latest tag", out, err)
+		fmt.Println(fmt.Sprint(err) + ": " + stderr.String() + "In GetLatestTag")
 	}
-	log.Println("Fetched tag:", string(out))
-	return string(out), err
+	log.Println("Fetched tag:", string(out.String()))
+	return out.String(), err
 }
 
 func TrimTag(latestTagRaw string) string {
