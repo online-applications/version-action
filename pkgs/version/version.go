@@ -22,7 +22,7 @@ func GetLatestTag() (string, error){
 	log.Println("Fetching latest tag version...")
 	out, err := exec.Command("sh", "-c", "git describe --tags $(git rev-list --tags --max-count=1)").Output()
 	if err != nil {
-		log.Println("Error was found while getting the latest tag", err)
+		log.Println("Error was found while getting the latest tag", out, err)
 	}
 	log.Println("Fetched tag:", string(out))
 	return string(out), err
