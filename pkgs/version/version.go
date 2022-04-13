@@ -36,6 +36,22 @@ func GetLatestTag() (string, error){
 	return out.String(), err
 }
 
+func ExportGitCeiling() (string, error){
+	log.Println("Exporting git ceiling...")
+
+	cmd := exec.Command("sh", "-c", "export GIT_CEILING_DIRECTORIES=/__w")
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println(fmt.Sprint(err) + ": " + stderr.String() + "In exportGitCeiling")
+	}
+	log.Println("exportGitCeiling:", string(out.String()))
+	return out.String(), err
+}
+
 func TrimTag(latestTagRaw string) string {
 	log.Println("Trimming tag:", latestTagRaw)
 	latest_tag := strings.Trim(latestTagRaw, "\n")

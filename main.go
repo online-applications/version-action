@@ -15,6 +15,14 @@ type Commit struct {
 }
 
 func prepareTagCommit(commitMessage, environment string) Commit {
+	// PATCH - Untill version 2.35.2 is supported on alpine
+	export_out, err := version.ExportGitCeiling()
+	if err != nil {
+		log.Println("exportGitCeiling - Error was found while getting the latest tag")
+	}
+	log.Println("exportGitCeiling - export_out:", export_out)
+	
+	
 	commit := Commit{}
 	// Get latest tag
 	latestTagRaw, err := version.GetLatestTag()
@@ -93,7 +101,6 @@ func main() {
 	
 	// Check if PreRelease exists
 	rc := version.CheckRc(commit.Tag)
-	
 	// Calculate staging or production version
 	switch environment {
 	case "main", "master", "production":
