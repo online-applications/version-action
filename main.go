@@ -114,9 +114,11 @@ func main() {
 			finalTag := productionVersion(commit, false)
 			// Set repo & ecr tag
 			utils.SetTagOutputName(finalTag)
+		} else {
+			finalTag := stagingVersion(commit, rc)
+			// Set repo & ecr tag
+			utils.SetTagOutputName(finalTag)	
 		}
-		finalTag := stagingVersion(commit, rc)
-		// Set repo & ecr tag
-		utils.SetTagOutputName(finalTag)
+
 	}
 }
