@@ -81,6 +81,19 @@ func productionVersion(commit Commit, rc bool) string{
 	return finalTag
 }
 
+func sdkVersion(commit Commit) string{
+	log.Println("Building sdk version for tag:", commit.Tag)
+	// Bump version
+	semVer := version.MakeSemVer(commit.Tag)
+	log.Println("succesfully made semver")
+	bumped := version.Bump(bumps, commit.Type, semVer)
+	strSemver := version.SemVerToString(bumped)
+	// Restore v
+	finalTag := version.AddV(strSemver)
+	return finalTag
+}
+
+
 func main() {
 	// Getting os variables
 	environment 		:= utils.GetEnv("ENVIRONMENT")
@@ -111,7 +124,7 @@ func main() {
 	default:
 		log.Printf("Branch is %s", environment)
 		if suffix == "none" {
-			finalTag := productionVersion(commit, false)
+			finalTag := sdkVersion(commit)
 			// Set repo & ecr tag
 			utils.SetTagOutputName(finalTag)
 		} else {
