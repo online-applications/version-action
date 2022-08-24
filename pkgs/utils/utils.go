@@ -14,26 +14,24 @@ func GetEnv(key string) string {
 	return ""
 }
 
-func SetTagOutputName(value string){
+func SetTagOutputName(value string) {
 	// Set ecr tag
-	ecr_tag := version.RemovePrefix(value, "v")
-	log.Println("Setting ecr tag as:", ecr_tag)
-	fmt.Printf(`::set-output name=ecr_tag::%s`, ecr_tag)
+	ecrTag := version.RemovePrefix(value, "v")
+	log.Println("Setting ecr tag as:", ecrTag)
+	fmt.Printf(`::set-output name=ecr_tag::%s`, ecrTag)
 	fmt.Print("\n")
 	// Set repo tag
-	repo_tag := value
-	log.Println("Setting repo tag as:", repo_tag)
-	fmt.Printf(`::set-output name=repo_tag::%s`, repo_tag)
+	repoTag := value
+	log.Println("Setting repo tag as:", repoTag)
+	fmt.Printf(`::set-output name=repo_tag::%s`, repoTag)
 	fmt.Print("\n")
 }
 
-func GetCliArg(argNum int) string {
-	args := os.Args
-	if len(args) == argNum {
-		return ""
+func SliceContains(s []string, str string) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
 	}
-	arg := os.Args[argNum]
-	log.Println("Found arg:", arg)
-	return arg
-
+	return false
 }

@@ -2,27 +2,26 @@ package main
 
 import (
 	"log"
-	"version-action/pkgs/version"
 	"version-action/pkgs/utils"
+	"version-action/pkgs/version"
 )
 
-var commitTypes = [...]string {"breaking", "feature", "bugfix"}
+var commitTypes = [...]string{"breaking", "feature", "bugfix"}
 var bumps = map[string]string{"breaking": "major", "feature": "minor", "bugfix": "patch"}
 
 type Commit struct {
-	Tag string
+	Tag  string
 	Type string
 }
 
-func prepareTagCommit(commitMessage, environment string) Commit {
+func prepareTagCommit(commitMessage, environment, bump string) Commit {
 	// PATCH - Untill version 2.35.2 is supported on alpine
-	export_out, err := version.AddSafeDirectory()
+	exportOut, err := version.AddSafeDirectory()
 	if err != nil {
 		log.Println("AddSafeDirectory - Error was found while getting the latest tag")
 	}
-	log.Println("AddSafeDirectory - export_out:", export_out)
-	
-	
+	log.Println("AddSafeDirectory - export_out:", exportOut)
+
 	commit := Commit{}
 	// Get latest tag
 	latestTagRaw, err := version.GetLatestTag()
@@ -33,7 +32,7 @@ func prepareTagCommit(commitMessage, environment string) Commit {
 	commit.Tag = version.TrimTag(latestTagRaw)
 
 	// Get commit message version level (breaking, feature, bugfix)
-	versionType := version.GetVersionType(commitMessage, commitTypes)
+	versionType := version.GetVersionType(commitMessage, commitTypes, bump)
 	if versionType == "" && environment == "staging" {
 		log.Fatalln("Commit message must contain one of the following: [breaking, feature, bugfix]")
 	}
@@ -65,7 +64,7 @@ func stagingVersion(commit Commit, rc bool) string {
 
 }
 
-func productionVersion(commit Commit, rc bool) string{
+func productionVersion(commit Commit, rc bool) string {
 	log.Println("Building production version for tag:", commit.Tag)
 	if rc {
 		tagNoRc := version.RemoveSuffix(commit.Tag, "-rc.")
@@ -81,7 +80,7 @@ func productionVersion(commit Commit, rc bool) string{
 	return finalTag
 }
 
-func sdkVersion(commit Commit) string{
+func sdkVersion(commit Commit) string {
 	log.Println("Building sdk version for tag:", commit.Tag)
 	// Bump version
 	semVer := version.MakeSemVer(commit.Tag)
@@ -93,25 +92,29 @@ func sdkVersion(commit Commit) string{
 	return finalTag
 }
 
-
 func main() {
 	// Getting os variables
-	environment 		:= utils.GetEnv("ENVIRONMENT")
-	commitMessage 		:= utils.GetEnv("COMMIT_MESSAGE")
-	
+	environment := utils.GetEnv("ENVIRONMENT")
+	commitMessage := utils.GetEnv("COMMIT_MESSAGE")
+
 	log.Println("Commit message:", commitMessage)
 
 	// Get CLI arguments
-    suffix 				:= utils.GetCliArg(1)
+	suffix := utils.GetEnv("INPUT_SUFFIX")
+	bump := utils.GetEnv("INPUT_BUMP")
+
+	if bump != "" && !utils.SliceContains([]string{"major", "minor", "patch"}, bump) {
+		log.Fatalln("Error bump must be on of: major, minor, patch")
+	}
 
 	log.Println("suffix is:", suffix)
 
 	// Preparing tag & commit
-	commit := prepareTagCommit(commitMessage, environment)
-	
+	commit := prepareTagCommit(commitMessage, environment, bump)
+
 	log.Println("Trimmed tag:", commit.Tag)
 	log.Println("versionType:", commit.Type)
-	
+
 	// Check if PreRelease exists
 	rc := version.CheckRc(commit.Tag)
 	// Calculate staging or production version
@@ -130,7 +133,7 @@ func main() {
 		} else {
 			finalTag := stagingVersion(commit, rc)
 			// Set repo & ecr tag
-			utils.SetTagOutputName(finalTag)	
+			utils.SetTagOutputName(finalTag)
 		}
 
 	}

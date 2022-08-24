@@ -1,13 +1,13 @@
 package version
 
 import (
-	"log"
-	"os/exec"
-	"strings"
-	"github.com/coreos/go-semver/semver"
-	"strconv"
 	"bytes"
 	"fmt"
+	"github.com/coreos/go-semver/semver"
+	"log"
+	"os/exec"
+	"strconv"
+	"strings"
 )
 
 func CheckRc(s string) bool {
@@ -20,7 +20,7 @@ func CheckRc(s string) bool {
 	return true
 }
 
-func GetLatestTag() (string, error){
+func GetLatestTag() (string, error) {
 	log.Println("Fetching latest tag version...")
 
 	cmd := exec.Command("sh", "-c", "git describe --tags $(git rev-list --tags --max-count=1)")
@@ -36,7 +36,7 @@ func GetLatestTag() (string, error){
 	return out.String(), err
 }
 
-func AddSafeDirectory() (string, error){
+func AddSafeDirectory() (string, error) {
 	log.Println("Exporting git ceiling...")
 
 	cmd := exec.Command("sh", "-c", "git config --global --add safe.directory /github/workspace")
@@ -61,22 +61,25 @@ func TrimTag(latestTagRaw string) string {
 		log.Println("Lastest tag was not found, using default tag: 0.0.1")
 		return "0.0.0"
 	}
-	latest_tag_no_v :=  RemovePrefix(latest, "v")
+	latest_tag_no_v := RemovePrefix(latest, "v")
 	return latest_tag_no_v
 }
 
-func GetVersionType(input string, words [3]string) string {
+func GetVersionType(input string, words [3]string, bump string) string {
+	if bump != "" {
+		return bump
+	}
 	v1 := strings.Contains(input, words[0])
 	v2 := strings.Contains(input, words[1])
 	v3 := strings.Contains(input, words[2])
 
 	switch true {
-	case v1: 
+	case v1:
 		return words[0]
 	case v2:
 		return words[1]
 	case v3:
-		return  words[2]
+		return words[2]
 	}
 
 	return ""
@@ -86,7 +89,7 @@ func SemVerToString(semVer *semver.Version) string {
 	return semVer.String()
 }
 
-func RemovePrefix(tag, prefix string) string { 
+func RemovePrefix(tag, prefix string) string {
 	return strings.Trim(tag, prefix)
 }
 
@@ -114,26 +117,26 @@ func IncreaseRc(tag string) (string, error) {
 		log.Println("Error converting rc version to int!")
 	}
 	// Increase by 1
-	intVIncreased := intV +1
+	intVIncreased := intV + 1
 	// Convert to string
 	strVIncreased := strconv.Itoa(intVIncreased)
 	// return
 	return splitted[0] + "-rc." + strVIncreased, err
 }
 
-func Bump(bumps map[string]string, versionType string, semVer *semver.Version ) *semver.Version {
+func Bump(bumps map[string]string, versionType string, semVer *semver.Version) *semver.Version {
 	bump, found := bumps[versionType]
 	log.Println("Bumping", bump)
 	switch found {
-		case bump == "major":
-			semVer.BumpMajor()
-			return semVer
-		case bump == "minor":
-			 semVer.BumpMinor()
-			 return semVer
-		case bump == "patch":
-			semVer.BumpPatch()
-			return semVer
+	case bump == "major":
+		semVer.BumpMajor()
+		return semVer
+	case bump == "minor":
+		semVer.BumpMinor()
+		return semVer
+	case bump == "patch":
+		semVer.BumpPatch()
+		return semVer
 	}
 	return semVer
 }

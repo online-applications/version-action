@@ -7,8 +7,12 @@ inputs:
   suffix:
     description: 'Default - rc, options: none'
     required: false
+  bump:
+    description: 'No default, options: patch,minor,major'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{ inputs.suffix }}
+    - ${{ inputs.bump }}
