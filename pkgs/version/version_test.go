@@ -49,7 +49,7 @@ func TestGetVersionType(t *testing.T) {
 	// breaking test
 	commitMessage := "breaking - this is a new feature"
 
-	versionType := GetVersionType(commitMessage, commitTypes)
+	versionType := GetVersionType(commitMessage, commitTypes, "")
 	versionType_want := "breaking"
 
 	if versionType != versionType_want {
@@ -60,7 +60,7 @@ func TestGetVersionType(t *testing.T) {
 
 	commitMessage_two := "feature this is a bugfix"
 
-	versionType_two := GetVersionType(commitMessage_two, commitTypes)
+	versionType_two := GetVersionType(commitMessage_two, commitTypes, "")
 	versionType_want_two := "feature"
 
 	if versionType_two != versionType_want_two {
@@ -70,7 +70,7 @@ func TestGetVersionType(t *testing.T) {
 	// bugfix test
 	commitMessage_three := "this is a bugfix"
 
-	versionType_three := GetVersionType(commitMessage_three, commitTypes)
+	versionType_three := GetVersionType(commitMessage_three, commitTypes, "")
 	versionType_want_three := "bugfix"
 
 	if versionType_three != versionType_want_three {
