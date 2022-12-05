@@ -3,7 +3,7 @@ name: Release
 on: 
   push:
     branches:
-      - main
+      - github-action-deprecation-fix
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -32,7 +32,7 @@ env:
   TEAM:                         DevOps
 
   # Release data
-  RELEASE_TAG:                  v2.0.0
+  RELEASE_TAG:                  v2.1.0
 
 jobs:
   Slack_Start:
@@ -40,9 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID_SEARCH }}
         aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY_SEARCH }}
@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Test code
       uses: addnab/docker-run-action@v3
       with:
@@ -84,16 +84,16 @@ jobs:
     needs: [Test]
     steps:
     - name: Checkout source code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Update tag ${{ env.RELEASE_TAG }}
-      if: ${{ env.ENVIRONMENT  == 'main' }}
+      if: ${{ env.ENVIRONMENT  == 'github-action-deprecation-fix' }}
       run: |
         git tag --delete ${{ env.RELEASE_TAG }} || true
         git push origin --delete ${{ env.RELEASE_TAG }} || true
         git tag ${{ env.RELEASE_TAG }}
         git push origin ${{ env.RELEASE_TAG }}
     - name: Release tag ${{ env.RELEASE_TAG }}
-      if: ${{ env.ENVIRONMENT  == 'main' }}
+      if: ${{ env.ENVIRONMENT  == 'github-action-deprecation-fix' }}
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ env.RELEASE_TAG }}
@@ -107,27 +107,27 @@ jobs:
         account: [SEARCH, PROG]
     steps:
     - name: Checkout source code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Configure AWS credentials for SEARCH
-      if: ${{ env.ENVIRONMENT  == 'main' && matrix.account == 'SEARCH' }}
-      uses: aws-actions/configure-aws-credentials@v1
+      if: ${{ env.ENVIRONMENT  == 'github-action-deprecation-fix' && matrix.account == 'SEARCH' }}
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID_SEARCH }}
         aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY_SEARCH }}
         aws-region: us-east-1
     - name: Configure AWS credentials for PROG
-      if: ${{ env.ENVIRONMENT  == 'main' && matrix.account == 'PROG' }}
-      uses: aws-actions/configure-aws-credentials@v1
+      if: ${{ env.ENVIRONMENT  == 'github-action-deprecation-fix' && matrix.account == 'PROG' }}
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID_PROG }}
         aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY_PROG }}
         aws-region: us-east-1
     - name: Login to Amazon ECR
-      if: ${{ env.ENVIRONMENT  == 'main' }}
+      if: ${{ env.ENVIRONMENT  == 'github-action-deprecation-fix' }}
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
     - name: Build & Tag docker
-      if: ${{ env.ENVIRONMENT  == 'main' }}
+      if: ${{ env.ENVIRONMENT  == 'github-action-deprecation-fix' }}
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
@@ -141,9 +141,9 @@ jobs:
     needs: [Slack_Start, Test, Tag_Release, Publish_Docker]
     steps:
     - name: Checkout source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID_SEARCH }}
         aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY_SEARCH }}
@@ -168,9 +168,9 @@ jobs:
     needs: [Test, Tag_Release, Publish_Docker]
     steps:
     - name: Checkout source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID_SEARCH }}
         aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY_SEARCH }}
