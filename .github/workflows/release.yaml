@@ -40,9 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID_SEARCH }}
         aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY_SEARCH }}
@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Test code
       uses: addnab/docker-run-action@v3
       with:
@@ -84,7 +84,7 @@ jobs:
     needs: [Test]
     steps:
     - name: Checkout source code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Update tag ${{ env.RELEASE_TAG }}
       if: ${{ env.ENVIRONMENT  == 'main' }}
       run: |
@@ -107,17 +107,17 @@ jobs:
         account: [SEARCH, PROG]
     steps:
     - name: Checkout source code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Configure AWS credentials for SEARCH
       if: ${{ env.ENVIRONMENT  == 'main' && matrix.account == 'SEARCH' }}
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID_SEARCH }}
         aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY_SEARCH }}
         aws-region: us-east-1
     - name: Configure AWS credentials for PROG
       if: ${{ env.ENVIRONMENT  == 'main' && matrix.account == 'PROG' }}
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID_PROG }}
         aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY_PROG }}
@@ -141,9 +141,9 @@ jobs:
     needs: [Slack_Start, Test, Tag_Release, Publish_Docker]
     steps:
     - name: Checkout source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID_SEARCH }}
         aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY_SEARCH }}
@@ -168,9 +168,9 @@ jobs:
     needs: [Test, Tag_Release, Publish_Docker]
     steps:
     - name: Checkout source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID_SEARCH }}
         aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY_SEARCH }}
