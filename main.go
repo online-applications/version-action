@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+
 	"version-action/pkgs/utils"
 	"version-action/pkgs/version"
 )
@@ -103,8 +104,8 @@ func main() {
 	suffix := utils.GetEnv("INPUT_SUFFIX")
 	bump := utils.GetEnv("INPUT_BUMP")
 
-	if bump != "" && !utils.SliceContains([]string{"major", "minor", "patch"}, bump) {
-		log.Fatalln("Error bump must be on of: major, minor, patch")
+	if bump != "" && !utils.SliceContains([]string{"breaking", "feature", "bugfix"}, bump) {
+		log.Fatalln("Error bump must be on of: breaking, feature, bugfix")
 	}
 
 	log.Println("suffix is:", suffix)

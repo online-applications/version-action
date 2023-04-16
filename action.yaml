@@ -8,7 +8,7 @@ inputs:
     description: 'Default - rc, options: none'
     required: false
   bump:
-    description: 'No default, options: patch,minor,major'
+    description: 'No default, options: breaking,feature,bugfix'
     required: false
 runs:
   using: 'docker'
